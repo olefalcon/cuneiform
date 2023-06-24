@@ -7,6 +7,9 @@ import {useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 
+//React Boostrap
+import {Button, Form, InputGroup, Alert, Container} from 'react-bootstrap';
+
 interface RegisterFormData {
     email: string;
     username: string;
@@ -38,16 +41,25 @@ export const RegisterForm = () => {
         resolver: yupResolver(schema)
     });
 
-    return <div>
-        <form onSubmit={handleSubmit(onRegister)}>
-            <p> Login Form </p>
-            <p>Email: <input type='email' {...register('email')} /></p>
-            <p> {errors.email?.message} </p>
-            <p>Username: <input {...register('username')} /></p>
-            <p> {errors.username?.message} </p>
-            <p>Password: <input type='password' {...register('password')} /></p>
-            <p> {errors.password?.message} </p>
-            <input type='submit'/>
-        </form>
-    </div>;
+    return <Container className='my-3'>
+        <Form onSubmit={handleSubmit(onRegister)}>
+            <h5> Register Form </h5>
+            <Form.Group className="mb-3">
+                <Form.Label>Email Address</Form.Label>
+                <Form.Control type="email" {...register('email')} />
+                {errors.email?.message && <Alert variant='danger'> {errors.email?.message} </Alert>}
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <Form.Label>Username</Form.Label>
+                <Form.Control {...register('username')} />
+                {errors.username?.message && <Alert variant='danger'> {errors.username?.message} </Alert>}
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <Form.Label>Password</Form.Label>
+                <Form.Control type="password" {...register('password')} />
+                {errors.password?.message && <Alert variant='danger'> {errors.password?.message} </Alert>}
+            </Form.Group>
+            <Button variant="outline-dark" type="submit">Register!</Button>
+        </Form>
+    </Container>;
 }

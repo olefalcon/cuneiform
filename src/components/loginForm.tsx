@@ -7,6 +7,9 @@ import {useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 
+//React Bootstrap
+import {Button, Form, InputGroup, Alert, Container} from 'react-bootstrap';
+
 interface LoginFormData {
     email: string;
     password: string;
@@ -33,14 +36,20 @@ export const LoginForm = () => {
         resolver: yupResolver(schema)
     });
 
-    return <div>
-        <form onSubmit={handleSubmit(onLogin)}>
-            <p> Login Form </p>
-            <p>Email: <input type='email' {...register('email')} /></p>
-            <p> {errors.email?.message} </p>
-            <p>Password: <input type='password' {...register('password')} /></p>
-            <p> {errors.password?.message} </p>
-            <input type='submit'/>
-        </form>
-    </div>;
+    return <Container className='my-3'>
+        <Form onSubmit={handleSubmit(onLogin)}>
+            <h5> Login Form </h5>
+            <Form.Group className="mb-3">
+                <Form.Label>Email Address</Form.Label>
+                <Form.Control type="email" {...register('email')} />
+                {errors.email?.message && <Alert variant='danger'> {errors.email?.message} </Alert>}
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <Form.Label>Password</Form.Label>
+                <Form.Control type="password" {...register('password')} />
+                {errors.password?.message && <Alert variant='danger'> {errors.password?.message} </Alert>}
+            </Form.Group>
+            <Button variant="outline-dark" type="submit">Login!</Button>
+        </Form>
+    </Container>;
 }

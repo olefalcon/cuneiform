@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react';
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {HashRouter as Router, Route, Routes} from 'react-router-dom';
 import './App.css';
 import {Main} from './pages/main/main';
 import {Register} from './pages/register';

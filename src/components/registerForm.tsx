@@ -1,11 +1,13 @@
 import {auth, provider} from '../config/firebase'
 import {createUserWithEmailAndPassword, updateProfile} from 'firebase/auth'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, createContext} from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import {useNavigate} from 'react-router-dom'
 import {useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
+
+
 
 //React Boostrap
 import {Button, Form, InputGroup, Alert, Container} from 'react-bootstrap';
@@ -29,13 +31,13 @@ export const RegisterForm = () => {
 
     useEffect(() => {
         if (loading) return;
-        if (user) navigate("/");
+        if (user) {navigate("/");window.location.reload();};
       }, [user, loading]);
 
     const onRegister = async (data: RegisterFormData) => {
         try {
             const result = await createUserWithEmailAndPassword(auth, data.email, data.password);
-            updateProfile(result.user, {
+            await updateProfile(result.user, {
                 displayName: data.username, photoURL: "../resources/images/default.png"
             });
         } catch (error) {

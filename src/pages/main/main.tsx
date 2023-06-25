@@ -3,9 +3,10 @@ import { useState, useEffect } from 'react';
 import {getDocs, collection, query, orderBy} from 'firebase/firestore';
 import {auth, db} from "../../config/firebase";
 import {Post} from "./post";
-import Container from 'react-bootstrap/Container';
-import { Button } from 'react-bootstrap';
+import { Button, Container } from 'react-bootstrap';
 import {ArrowClockwise} from 'react-bootstrap-icons';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import {InitialNotice} from './initialNotice';
 
 export interface Post {
     id: string,
@@ -18,6 +19,9 @@ export interface Post {
 export const Main = () => {
     const [postsList, setPostsList] = useState<Post[] | null>(null);
     const postsRef = collection(db, "posts");
+    const [user] = useAuthState(auth);
+    const [viewPopup, setViewPopup] = useState(false);
+    let visited = localStorage["alreadyVisited"];
 
     const getPosts = async () => {
         setPostsList(null);
@@ -29,10 +33,16 @@ export const Main = () => {
         if (!postsList) {
             getPosts();
         }
+        if (!visited) {
+            localStorage["alreadyVisited"] = true;
+            setViewPopup(true);
+        }
     }, [])
 
     return <Container className='my-3'>
-        <PostForm getPosts={getPosts} />
+        {viewPopup && <InitialNotice />}
+        {user && <PostForm getPosts={getPosts} />}
+        {!user && <p>Must be logged in to make a post.</p>}
         <Button variant='dark' size='sm' onClick={getPosts}><ArrowClockwise /></Button>
         <div>
             {!postsList && <p>Loading...</p>}

@@ -3,7 +3,7 @@ import {auth} from '../config/firebase';
 import {useAuthState} from 'react-firebase-hooks/auth';
 import {signOut} from 'firebase/auth';
 import {useState, useEffect} from 'react';
-import { Container, Nav, Navbar, Button } from 'react-bootstrap';
+import { Container, Nav, Navbar } from 'react-bootstrap';
 import {LinkContainer} from 'react-router-bootstrap';
 
 export const NavbarComponent = () => {

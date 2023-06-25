@@ -10,7 +10,7 @@ export const NavbarComponent = () => {
     const [user, loading, error] = useAuthState(auth);
 
     useEffect(() => {
-      }, [user, loading]);
+    }, [user, loading]);
 
     const signUserOut = async () => {
         await signOut(auth);
@@ -18,15 +18,19 @@ export const NavbarComponent = () => {
 
     return <Navbar expand="lg" className="bg-body-tertiary">
         <Container>
-            <Nav className='navbar-nav m-auto'>
-                <Navbar.Collapse>
-                    <LinkContainer to='/'><Nav.Link className='nav-item'>Home</Nav.Link></LinkContainer>
-                    {!user && <LinkContainer to='/register'><Nav.Link>Register</Nav.Link></LinkContainer>}
-                    {!user && <LinkContainer to='/login'><Nav.Link>Login</Nav.Link></LinkContainer>}
-                    {user && <Navbar.Text><span>{user?.displayName}</span></Navbar.Text>}
-                    {user && <Nav.Link><Button variant='outline-dark' size='sm' onClick={signUserOut}>Sign Out</Button></Nav.Link>}
+                <Navbar.Brand>Cuneiform</Navbar.Brand>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id='responsive-navbar-nav'>
+                    <Nav variant='underline' className='me-auto'>
+                        <LinkContainer to='/'><Nav.Link>Feed</Nav.Link></LinkContainer>
+                        {!user && <LinkContainer to='/register'><Nav.Link>Register</Nav.Link></LinkContainer>}
+                        {!user && <LinkContainer to='/login'><Nav.Link>Login</Nav.Link></LinkContainer>}
+                        {user && <Nav.Link onClick={signUserOut}>Sign Out</Nav.Link>}
+                    </Nav>
+                    <Nav>
+                        {user && <Navbar.Text>{user?.displayName}</Navbar.Text>}
+                    </Nav>
                 </Navbar.Collapse>
-            </Nav>
         </Container>
     </Navbar>;
 }

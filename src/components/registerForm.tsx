@@ -19,6 +19,7 @@ interface RegisterFormData {
 export const RegisterForm = () => {
     const navigate = useNavigate();
     const [user, loading, error] = useAuthState(auth);
+    const [isFormError, setIsFormError] = useState(false);
 
     const schema = yup.object().shape({
         email: yup.string().required("You must have a email.").email("You must provide a valid email."),
@@ -32,10 +33,15 @@ export const RegisterForm = () => {
       }, [user, loading]);
 
     const onRegister = async (data: RegisterFormData) => {
-        const result = await createUserWithEmailAndPassword(auth, data.email, data.password);
-        updateProfile(result.user, {
-            displayName: data.username, photoURL: "../resources/images/default.png"
-        });
+        try {
+            const result = await createUserWithEmailAndPassword(auth, data.email, data.password);
+            updateProfile(result.user, {
+                displayName: data.username, photoURL: "../resources/images/default.png"
+            });
+        } catch (error) {
+            console.log(error);
+            setIsFormError(true);
+        }
     }
     const {register, handleSubmit, formState: {errors}} = useForm<RegisterFormData>({
         resolver: yupResolver(schema)
@@ -59,6 +65,7 @@ export const RegisterForm = () => {
                 <Form.Control type="password" {...register('password')} />
                 {errors.password?.message && <Alert variant='danger'> {errors.password?.message} </Alert>}
             </Form.Group>
+            {isFormError && <Alert variant='danger'>There was an error while registering!</Alert>}
             <Button variant="outline-dark" type="submit">Register!</Button>
         </Form>
     </Container>;

@@ -14,14 +14,14 @@ interface CreateFormData {
     post: string;
 }
 
-export const PostForm = () => {
+export const PostForm = (props: {getPosts: () => void}) => {
     const [user] = useAuthState(auth);
 
     const schema = yup.object().shape({
         post: yup.string().required("You cannot post nothing.")
     });
 
-    const {register, handleSubmit, formState: {errors}} = useForm<CreateFormData>({
+    const {register, handleSubmit, reset, formState: {errors}} = useForm<CreateFormData>({
         resolver: yupResolver(schema)
     });
 
@@ -34,13 +34,17 @@ export const PostForm = () => {
             userID: user?.uid,
             username: user?.displayName
         });
+        props.getPosts();
+        reset({
+            post: ''
+        });
     }
 
     return (
         <Form onSubmit={handleSubmit(onCreatePost)} className='my-3'>
             <InputGroup>
-                <Form.Control as="textarea" rows={2} placeholder='Type something...' {...register('post')} />
-                <Button variant='outline'>Post</Button>
+                <Form.Control as="textarea" rows={2} placeholder='Mark the wall...' {...register('post')} />
+                <Button type='submit' variant='outline'>Post</Button>
             </InputGroup>
             {errors.post?.message && <Alert variant='danger'> {errors.post?.message} </Alert>}
         </Form>

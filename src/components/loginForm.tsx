@@ -18,6 +18,7 @@ interface LoginFormData {
 export const LoginForm = () => {
     const navigate = useNavigate();
     const [user, loading, error] = useAuthState(auth);
+    const [isFormError, setIsFormError] = useState(false);
 
     const schema = yup.object().shape({
         email: yup.string().required("Invalid email."),
@@ -30,7 +31,12 @@ export const LoginForm = () => {
       }, [user, loading]);
 
     const onLogin = async (data: LoginFormData) => {
-        const result = await signInWithEmailAndPassword(auth, data.email, data.password);
+        try {
+            const result = await signInWithEmailAndPassword(auth, data.email, data.password);
+        } catch (error) {
+            console.log(error);
+            setIsFormError(true);
+        }
     }
     const {register, handleSubmit, formState: {errors}} = useForm<LoginFormData>({
         resolver: yupResolver(schema)
@@ -49,6 +55,7 @@ export const LoginForm = () => {
                 <Form.Control type="password" {...register('password')} />
                 {errors.password?.message && <Alert variant='danger'> {errors.password?.message} </Alert>}
             </Form.Group>
+            {isFormError && <Alert variant='danger'>There was an error while logging in!</Alert>}
             <Button variant="outline-dark" type="submit">Login!</Button>
         </Form>
     </Container>;

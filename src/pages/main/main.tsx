@@ -1,5 +1,5 @@
-import {PostForm} from '../../components/postForm';
-import { useState, useEffect } from 'react';
+import {PostForm} from './postForm';
+import { useState, useEffect, createContext, useContext } from 'react';
 import {getDocs, collection, query, orderBy} from 'firebase/firestore';
 import {auth, db} from "../../config/firebase";
 import {Post} from "./post";
@@ -15,6 +15,13 @@ export interface Post {
     userID: string,
     username: string
 }
+export type MainContextType = {
+    getPosts: () => void
+}
+export const MainContext = createContext<MainContextType>({
+    getPosts: () => {}
+});
+export const useMainContext = () => useContext(MainContext);
 
 export const Main = () => {
     const [postsList, setPostsList] = useState<Post[] | null>(null);
@@ -39,9 +46,11 @@ export const Main = () => {
         }
     }, [])
 
-    return <Container className='my-3'>
+    return (
+    <MainContext.Provider value= {{ getPosts }}>
+    <Container className='my-3'>
         {viewPopup && <InitialNotice />}
-        {user && <PostForm getPosts={getPosts} />}
+        {user && <PostForm />}
         {!user && <p>Must be logged in to make a post.</p>}
         <Button variant='dark' size='sm' onClick={getPosts}><ArrowClockwise /></Button>
         <div>
@@ -50,5 +59,7 @@ export const Main = () => {
                 <Post post={post}/>
             )}
         </div>
-    </Container>;
+    </Container>
+    </MainContext.Provider>
+    );
 }

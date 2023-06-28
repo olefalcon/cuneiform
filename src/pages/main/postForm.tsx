@@ -2,8 +2,9 @@ import {useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {addDoc, collection, Timestamp} from 'firebase/firestore';
-import {auth, db} from "../config/firebase";
+import {auth, db} from "../../config/firebase";
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useMainContext } from './main';
 
 //React Boostrap
 import {Button, Form, InputGroup, Alert} from 'react-bootstrap';
@@ -14,8 +15,9 @@ interface CreateFormData {
     post: string;
 }
 
-export const PostForm = (props: {getPosts: () => void}) => {
+export const PostForm = () => {
     const [user] = useAuthState(auth);
+    const {getPosts} = useMainContext();
 
     const schema = yup.object().shape({
         post: yup.string().required("You cannot post nothing.")
@@ -34,7 +36,7 @@ export const PostForm = (props: {getPosts: () => void}) => {
             userID: user?.uid,
             username: user?.displayName
         });
-        props.getPosts();
+        getPosts();
         reset({
             post: ''
         });
